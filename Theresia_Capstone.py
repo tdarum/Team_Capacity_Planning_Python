@@ -374,8 +374,10 @@ def main():
             team_choice = input("Select Team (1/2): ")
             if team_choice == "1":
                 redistribute_tasks_across_member(team_1)
+                show_tabulate_team (team_1)
             elif team_choice == "2":
                 redistribute_tasks_across_member(team_2)
+                show_tabulate_team(team_2)
 
         elif choice == "4":
             team_choice = input("Select Team (1/2): ")
