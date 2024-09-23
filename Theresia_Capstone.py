@@ -17,7 +17,7 @@ def show_tabulate_team(team):
     print('| {:<10} | {:<8} | {:<8} | {:<8} |{:<8} |{:<12} |'.format('Member ID','Name', 'Workload', 'Tasks', 'Capacity','Remaining Capacity'))
     print('+------------+----------+-----------+---------+---------+--------------------')
 
-    # Print each data item.
+    # Print  data item.
     for member, val in team.items():
         print('| {:<10} | {:<8} | {:<8} | {:<8} |{:<8} |{:<18} |'.format(member,val["name"], val["workload"], len(val["tasks"]), val["capacity"], val["remaining_capacity"]))
 
@@ -112,7 +112,7 @@ def update_task(team, member_id):
         tasks = team[member_id]["tasks"]
         
         # Check if the member has tasks
-        if len(tasks) <=0:
+        if len(tasks) <= 0:
             print(f"{team[member_id]['name']} has no tasks.")
             return
         
@@ -124,12 +124,12 @@ def update_task(team, member_id):
             print(f"{index}: Task Name : {task['name']}, Workload : {task['workload']}")
             index += 1  # Increment index
         
-        # input Task index from member that choosen
-        #try:
-        task_index = int(input("Enter the index of the task that you want to update: "))
-        #except ValueError:
-        #    print("Invalid input. Please enter a valid number.")
-        #    return
+        # Input Task index from member that was chosen
+        try:
+            task_index = int(input("Enter the index of the task that you want to update: "))
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
+            return
         
         # Check if the index is valid
         if 0 <= task_index < len(tasks):
@@ -137,30 +137,34 @@ def update_task(team, member_id):
             # Get new task details from the user
             new_task_name = input("Enter the new task name: ")
             new_task_workload_input = input("Enter the new task workload: ")
-            #check task
+            
+            # Check if the input for workload is valid
             while not new_task_workload_input.isdigit():
                 print("Invalid input for workload. Please enter a valid number.")
                 new_task_workload_input = input("Enter the new task workload: ")
 
-            # Convert the to integer
+            # Convert to int
             new_task_workload = int(new_task_workload_input)
-            # Update the task
+            
+            # Update the task: sact old task's workload, then add the new one
+            team[member_id]["workload"] -= old_task["workload"]
             tasks[task_index] = {"name": new_task_name, "workload": new_task_workload}
-            print(f"Update task '{old_task['name']}' to '{new_task_name}' for {team[member_id]['name']}.")
             team[member_id]["workload"] += new_task_workload 
-        
+            
+            # Update remaining capacity
             team[member_id]["remaining_capacity"] = team[member_id]["capacity"] - team[member_id]["workload"]
+            print(f"Updated task '{old_task['name']}' to '{new_task_name}' for {team[member_id]['name']}.")
+
+            # Calculate team workload and capacity again
             team_workload = calculate_team_workload(team)
             team_capacity = calculate_team_capacity(team)
-            #add team remianing capacity
-            #add team reminaing capacitty
-            team_remaining_capcity = calculate_remaining_team_capacity(team)
-            #print(f"Added task '{task_name}' with workload {task_workload} to {team[member_id]['name']}.")
+            team_remaining_capacity = calculate_remaining_team_capacity(team)
+
             print(f"Team workload is {team_workload}")
-            print(f"Maximum team capacity is  {team_capacity}")
-            print(f"Team remaining capacity has been updated to {team_remaining_capcity}")
+            print(f"Maximum team capacity is {team_capacity}")
+            print(f"Team remaining capacity has been updated to {team_remaining_capacity}")
         else:
-            print("Task is not found.")
+            print("Task not found.")
     else:
         print(f"Member ID {member_id} not found.")
 
@@ -337,7 +341,6 @@ def display_team_member_capacity(team):
 
 
 
-
 def main():
     while True:
         #print option menu
@@ -367,7 +370,7 @@ def main():
                 add_task(team_1, member_id)
                 show_tabulate_team(team_1)
             elif team_choice == "2":
-                add_task(team_1, member_id)
+                add_task(team_2, member_id)
                 show_tabulate_team(team_2)
 
         elif choice == "3":
@@ -384,32 +387,38 @@ def main():
             if team_choice == "1":
                 display_team_member_capacity(team_1)
             elif team_choice == "2":
-                display_team_member_capacity(team_1)
+                display_team_member_capacity(team_2)
 
         elif choice == "5":
             team_choice = input("Select Team (1/2): ")
             member_id = input("Enter Member ID : ")
             if team_choice == "1":
                 delete_team_member(team_1, member_id)
+                show_tabulate_team (team_1)
             elif team_choice == "2":
-                delete_team_member(team_1, member_id)
+                delete_team_member(team_2, member_id)
+                show_tabulate_team (team_2)
 
         elif choice == "6":
             team_choice = input("Select Team (1/2): ")
             member_id = input("Enter Member ID : ")
             if team_choice == "1":
-                delete_task(team_2, member_id)
+                delete_task(team_1, member_id)
+                show_tabulate_team (team_1)
             elif team_choice == "2":
                 delete_task(team_2, member_id)
+                show_tabulate_team (team_2)
                 
         elif choice == "7":
             team_choice = input("Select Team (1/2): ")
             member_id = input("Enter Member ID : ")
             if team_choice == "1":
                 update_task(team_1, member_id)
+                show_tabulate_team (team_1)
                 #update_task(team_1)
             elif team_choice == "2":
-                update_task(team_1, member_id)
+                update_task(team_2, member_id)
+                show_tabulate_team (team_2)
         elif choice == "0":
             break
         else:
